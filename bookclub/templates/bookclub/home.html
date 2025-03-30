@@ -1,0 +1,76 @@
+{% extends 'bookclub/base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+    .full-screen {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: #f8f9fa;
+    }
+    .content-container {
+        width: 100%;
+        max-width: 1200px;
+        padding: 20px;
+    }
+</style>
+
+<div class="full-screen">
+    <div class="content-container text-center">
+        <h1 class="display-4 font-weight-bold text-primary">Book Sphere</h1>
+        <div class="d-flex justify-content-center align-items-center p-3">
+            <img src="{% static 'images/books_lib.jpg' %}" alt="Logo" class="img-fluid rounded shadow-lg" style="max-width: 700px; height: auto;">
+        </div>
+
+        {% if user.is_authenticated %}
+        <div class="mt-4">
+            <h2 class="text-success">Next Meeting:</h2>
+        </div>
+        {% if next_meeting %}
+        <div id="meeting-div" class="container py-3 px-4 rounded shadow-lg bg-light">
+            <table class="table table-striped table-hover table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Date</th>
+                        <th>Host</th>
+                        <th>Location</th>
+                        <th>Book</th>
+                        <th>Next Chooser</th>
+                        <th>More details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ next_meeting.meeting_date }}</td>
+                        <td>{{ next_meeting.host }}</td>
+                        <td>{{ next_meeting.location }}</td>
+                        {% if next_meeting.book.title %}
+                        <td><strong>{{ next_meeting.book.title }}</strong> by {{ next_meeting.book.author }}</td>
+                        {% else %}
+                        <td class="text-muted">TBT</td>
+                        {% endif %}
+                        <td>{{ next_meeting.chooser_name }}</td>
+                        <td><a href="{{ next_meeting.get_absolute_url }}" class="btn btn-sm btn-info">Show More</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted">No upcoming meetings found.</p>
+        {% endif %}
+        {% else %}
+        <div class="mt-4">
+            <h2 class="text-danger">Please Log In</h2>
+            <div class="mt-3">
+                <a href="{% url 'login' %}" class="btn btn-primary btn-lg">Log in</a>
+                <a href="{% url 'password_reset' %}" class="btn btn-outline-secondary btn-lg">Forgot Password?</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
